@@ -34,8 +34,8 @@ export default class Box extends EventEmitter {
             this.animations = gltf.animations
             this.mixer = new THREE.AnimationMixer(this.model)
 
-            // Add a button to trigger the animation after 10 seconds
-            this.hatchButton = this.experience.gui.add({ triggerAnimation: () => this.triggerAnimation() }, 'triggerAnimation').name('Hatch in 10s')
+            // Add a button to trigger the animation after 2 seconds
+            this.hatchButton = this.experience.gui.add({ triggerAnimation: () => this.triggerAnimation() }, 'triggerAnimation').name('Hatch in 2s')
         }, undefined, (e) => {
             console.error(e)
         })
@@ -44,7 +44,7 @@ export default class Box extends EventEmitter {
     triggerAnimation() {
         setTimeout(() => {
             this.playAnimation('Hatch')
-        }, 1000)
+        }, 2000) // Hatch after 2 seconds
     }
 
     playAnimation(name) {

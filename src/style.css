@@ -1,38 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 body {
     margin: 0;
-    background-color: #000;
-    color: #fff;
-    font-family: Monospace;
-    font-size: 13px;
+    background-color: #282c34; /* Darker background */
+    color: #61dafb; /* Light blue text */
+    font-family: 'Press Start 2P', cursive; /* Custom font */
+    font-size: 14px; /* Slightly larger font */
     line-height: 24px;
     overscroll-behavior: none;
     overflow: hidden; /* Prevent scrolling */
 }
 
-a {
-    color: #ff0;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-#info {
+.progress-bar-container {
     position: absolute;
-    top: 0px;
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    text-align: center;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    pointer-events: none;
-    z-index: 1; /* TODO Solve this in HTML */
+    top: 10px;
+    left: 10px;
+    width: 200px;
+    height: 20px;
+    border: 2px solid #61dafb; /* Light blue border */
+    background-color: #1a1a1a; /* Dark background */
 }
 
-a, input, select {
-    pointer-events: auto;
+.progress-bar {
+    height: 100%;
+    background-color: #61dafb; /* Light blue progress */
+}
+
+.lil-gui .button {
+    background-color: #61dafb; /* Light blue button */
+    color: #282c34; /* Dark text */
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive; /* Custom font */
+}
+
+.lil-gui .button:hover {
+    background-color: #21a1f1; /* Darker blue on hover */
 }

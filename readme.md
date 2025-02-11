@@ -11,3 +11,7 @@ Run these commands:
 `npm run dev` - Run the local server at localhost:8080
 
 `npm run build` - Build for production in the dist/ directory
+
+## Credits
+- Model by [Tomás Laulhé](https://www.patreon.com/quaternius), modifications by [Don McCurdy](https://donmccurdy.com/). CC0.
+- Based on examples from [three.js](https://threejs.org).

@@ -40,8 +40,8 @@ export default class Experience {
         })
 
         // Stats
-        this.stats = new Stats()
-        document.body.appendChild(this.stats.dom)
+        // this.stats = new Stats()
+        // document.body.appendChild(this.stats.dom)
     }
 
     resize() {
@@ -54,7 +54,7 @@ export default class Experience {
 
         this.world.update(deltaTime)
        
-        this.stats.update()
+        // this.stats.update()
 
         this.renderer.update()
     }
