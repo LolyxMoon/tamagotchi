@@ -55,7 +55,7 @@ export default class TamagotchiController {
             this.actions[clip.name] = action
 
             // Single-use animations (emotes or states with index >= 4) play once and clamp
-            if (['Death'].includes(clip.name)) {
+            if (['Death', 'Dance'].includes(clip.name)) {
                 action.loop = THREE.LoopOnce
                 action.clampWhenFinished = true
             }
@@ -66,6 +66,10 @@ export default class TamagotchiController {
     }
 
     fadeToAction(clipName, duration) {
+        if (!this.isAlive && clipName !== 'Death') {
+            return
+        }
+
         this.previousAction = this.activeAction
         this.activeAction = this.actions[clipName]
 
@@ -87,6 +91,23 @@ export default class TamagotchiController {
         if (this.isAlive) {
             this.batteryLevel = 100
             this.updateExpression()
+            this.playDanceAnimation()
+        }
+    }
+
+    playDanceAnimation() {
+        this.fadeToAction('Dance', 0.5)
+        this.mixer.addEventListener('finished', this.restoreWalking())
+    }
+
+    restoreWalking() {
+        return () => {
+            if (this.mixer) {
+                this.mixer.removeEventListener('finished', this.restoreWalking())
+            }
+            if (this.isAlive) {
+                this.fadeToAction('Walking', 0.5)
+            }
         }
     }
 
@@ -128,14 +149,10 @@ export default class TamagotchiController {
 
     updateExpression() {
         const face = this.robot.model.getObjectByName('Head_4')
-        console.log("Hi")
         if (face && face.morphTargetDictionary) {
-            console.log("hello")
-            console.log('Available morph targets:', face.morphTargetDictionary)
             const sadIndex = face.morphTargetDictionary['Sad']
 
             if (sadIndex !== undefined) {
-                console.log("hola")
                 const sadness = 1 - (this.batteryLevel / 100)
                 face.morphTargetInfluences[sadIndex] = sadness
             }
