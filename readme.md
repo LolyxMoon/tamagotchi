@@ -1,16 +1,13 @@
-# Three.js Journey
+# Tamagotchi Project
+
+This project is a virtual pet game inspired by the classic Tamagotchi. The game is built using Three.js for rendering 3D graphics and provides an interactive experience for users to take care of their virtual pet.
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
-Run this followed commands:
+Run these commands:
 
-``` bash
-# Install dependencies (only the first time)
-npm install
+`npm install` - Install dependencies (only the first time)
 
-# Run the local server at localhost:8080
-npm run dev
+`npm run dev` - Run the local server at localhost:8080
 
-# Build for production in the dist/ directory
-npm run build
-```
+`npm run build` - Build for production in the dist/ directory
