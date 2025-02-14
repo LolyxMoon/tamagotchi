@@ -9,7 +9,7 @@ export default class TamagotchiController {
         this.robot = robot
 
         this.batteryLevel = 100
-        this.batteryDrainRate = 100 / 10 // Battery drains to 0 in 10 seconds
+        this.batteryDrainRate = 100 / 300 // Battery drains to 0 in 300 seconds (5 minutes)
         this.isAlive = true
         this.currentMode = 'feed' // Default mode
         this.wasteObjects = []
@@ -19,11 +19,10 @@ export default class TamagotchiController {
         this.activeAction = null
         this.previousAction = null
 
-        this.createBatteryBar()
         this.createButtons()
         this.createProgressBar()
         this.createModeIndicator()
-        this.createResetButton() // Call the method to create the reset button
+        this.createResetButton()
 
         // Initialize animations
         this.initAnimations()
@@ -35,14 +34,10 @@ export default class TamagotchiController {
         this.startWasteCreation()
     }
 
-    createBatteryBar() {
-        this.batteryBar = this.gui.add(this, 'batteryLevel', 0, 100).name('Battery Level').listen()
-    }
-
     createButtons() {
-        this.buttonA = this.gui.add(this, 'toggleMode').name('Toggle Mode')
-        this.buttonB = this.gui.add(this, 'performAction').name('Perform Action')
-        this.buttonC = this.gui.add(this, 'cancelAction').name('Cancel Action')
+        this.gui.add(this, 'toggleMode').name('Toggle Mode')
+        this.gui.add(this, 'performAction').name('Perform Action')
+        this.gui.add(this, 'cancelAction').name('Cancel Action')
     }
 
     createProgressBar() {
@@ -104,7 +99,7 @@ export default class TamagotchiController {
             this.actions[clip.name] = action
 
             // Single-use animations (emotes or states with index >= 4) play once and clamp
-            if (['Death', 'Dance', 'ThumbsUp'].includes(clip.name)) {
+            if (['Death', 'Dance', 'ThumbsUp', 'Jump'].includes(clip.name)) {
                 action.loop = THREE.LoopOnce
                 action.clampWhenFinished = true
             }
@@ -150,14 +145,24 @@ export default class TamagotchiController {
         switch (this.currentMode) {
             case 'feed':
                 this.feedBattery()
+                this.playJumpAnimation() // Play jump animation when fed
                 break
             case 'play':
-                this.playWithRobot()
+                this.playDanceAnimation() // Make the robot dance in play mode
                 break
             case 'clean':
                 this.cleanRobot()
                 break
         }
+    }
+
+    playJumpAnimation() {
+        this.fadeToAction('Jump', 0.5)
+        const onJumpFinished = () => {
+            this.mixer.removeEventListener('finished', onJumpFinished)
+            this.restoreWalking()
+        }
+        this.mixer.addEventListener('finished', onJumpFinished)
     }
 
     cancelAction() {
@@ -171,13 +176,7 @@ export default class TamagotchiController {
         if (this.isAlive) {
             this.batteryLevel = 100
             this.updateExpression()
-            this.playDanceAnimation()
         }
-    }
-
-    playWithRobot() {
-        console.log('Playing with the robot')
-        // Implement play logic (e.g., play a specific animation)
     }
 
     cleanRobot() {
@@ -191,22 +190,25 @@ export default class TamagotchiController {
 
     playDanceAnimation() {
         this.fadeToAction('Dance', 0.5)
-        this.mixer.addEventListener('finished', this.restoreWalking())
+        const onDanceFinished = () => {
+            this.mixer.removeEventListener('finished', onDanceFinished)
+            this.restoreWalking()
+        }
+        this.mixer.addEventListener('finished', onDanceFinished)
     }
 
     playThumbsUpAnimation() {
         this.fadeToAction('ThumbsUp', 0.5)
-        this.mixer.addEventListener('finished', this.restoreWalking())
+        const onThumbsUpFinished = () => {
+            this.mixer.removeEventListener('finished', onThumbsUpFinished)
+            this.restoreWalking()
+        }
+        this.mixer.addEventListener('finished', onThumbsUpFinished)
     }
 
     restoreWalking() {
-        return () => {
-            if (this.mixer) {
-                this.mixer.removeEventListener('finished', this.restoreWalking())
-            }
-            if (this.isAlive) {
-                this.fadeToAction('Walking', 0.5)
-            }
+        if (this.isAlive) {
+            this.fadeToAction('Walking', 0.5)
         }
     }
 
@@ -307,7 +309,6 @@ export default class TamagotchiController {
         this.fadeToAction('Death', 0.5)
         this.showResetButton()
         clearInterval(this.wasteCreationInterval) // Stop waste creation
-        // Add any additional logic for when the robot dies
     }
 
     reset() {

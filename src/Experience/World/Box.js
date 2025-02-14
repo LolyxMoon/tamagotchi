@@ -34,33 +34,19 @@ export default class Box extends EventEmitter {
             this.animations = gltf.animations
             this.mixer = new THREE.AnimationMixer(this.model)
 
-            // Add a button to trigger the animation after 2 seconds
-            this.hatchButton = this.experience.gui.add({ triggerAnimation: () => this.triggerAnimation() }, 'triggerAnimation').name('Hatch in 2s')
+            // Add a button to trigger the animation after 10 seconds
+            this.hatchButton = this.experience.gui.add({ triggerAnimation: () => this.triggerAnimation() }, 'triggerAnimation').name('Hatch')
         }, undefined, (e) => {
             console.error(e)
         })
+
+        // Load the hatch sound
+        this.hatchSound = new Audio('sounds/pop.wav')
     }
 
-    triggerAnimation() {
-        setTimeout(() => {
-            this.playAnimation('Hatch')
-        }, 2000) // Hatch after 2 seconds
-    }
-
-    playAnimation(name) {
-        const clip = THREE.AnimationClip.findByName(this.animations, name)
-        if (clip) {
-            const action = this.mixer.clipAction(clip)
-            action.reset().play()
-            action.clampWhenFinished = true
-            action.loop = THREE.LoopOnce
-
-            // Listen for the finished event
-            this.mixer.addEventListener('finished', () => {
-                this.onAnimationFinished()
-            })
-        } else {
-            console.warn(`Animation ${name} not found`)
+    playHatchSound() {
+        if (this.hatchSound) {
+            this.hatchSound.play()
         }
     }
 
@@ -84,6 +70,34 @@ export default class Box extends EventEmitter {
 
         // Emit an event to notify that the box animation is finished
         this.trigger('boxHatched')
+    }
+
+    triggerAnimation() {
+        setTimeout(() => {
+            this.playAnimation('Hatch')
+        }, 10000) // Hatch after 10 seconds
+    }
+
+    playAnimation(name) {
+        const clip = THREE.AnimationClip.findByName(this.animations, name)
+        if (clip) {
+            const action = this.mixer.clipAction(clip)
+            action.reset().play()
+            action.clampWhenFinished = true
+            action.loop = THREE.LoopOnce
+
+            // Play the hatch sound a bit earlier to synchronize with the animation
+            setTimeout(() => {
+                this.playHatchSound()
+            }, 500) // Adjust the timing as needed
+
+            // Listen for the finished event
+            this.mixer.addEventListener('finished', () => {
+                this.onAnimationFinished()
+            })
+        } else {
+            console.warn(`Animation ${name} not found`)
+        }
     }
 
     update(deltaTime) {

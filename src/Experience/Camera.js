@@ -15,7 +15,7 @@ export default class Camera {
 
     setInstance() {
         this.instance = new THREE.PerspectiveCamera(45, this.sizes.width / this.sizes.height, 0.1, 100)
-        this.instance.position.set(-5, 3, 10)
+        this.instance.position.set(-10, 6, 20) // Adjusted camera position
         this.instance.lookAt(0, 2, 0)
         this.scene.add(this.instance)
     }
@@ -23,6 +23,12 @@ export default class Camera {
     setControls() {
         this.controls = new OrbitControls(this.instance, this.canvas)
         this.controls.enableDamping = true
+        this.controls.minPolarAngle = Math.PI / 4 // Prevent camera from rotating below the floor
+        this.controls.maxPolarAngle = Math.PI / 2 // Prevent camera from rotating above the horizon
+        this.controls.minDistance = 5 // Minimum zoom distance
+        this.controls.maxDistance = 30 // Maximum zoom distance
+        this.controls.minAzimuthAngle = -Math.PI / 2 // Restrict rotation to prevent scene disappearance
+        this.controls.maxAzimuthAngle = Math.PI / 2 // Restrict rotation to prevent scene disappearance
     }
 
     resize() {
