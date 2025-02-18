@@ -53,6 +53,8 @@ export default class Experience {
         const deltaTime = this.time.delta
 
         this.world.update(deltaTime)
+
+        this.camera.update()
        
         // this.stats.update()
 
