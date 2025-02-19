@@ -1,7 +1,8 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import Experience from '../Experience.js'
-import TamagotchiControllerDebug from './TamagotchiController.debug.js'
+// import TamagotchiControllerDebug from './TamagotchiController.debug.js'
+import TamagotchiController from './TamagotchiController.js'
 
 export default class Robot {
     constructor() {
@@ -19,7 +20,8 @@ export default class Robot {
             this.scene.add(this.model) // Ensure the model is added to the scene
 
             // Initialize the TamagotchiControllerDebug
-            this.tamagotchiController = new TamagotchiControllerDebug(this)
+            // this.tamagotchiController = new TamagotchiControllerDebug(this)
+            this.tamagotchiController = new TamagotchiController(this)
         }, undefined, (e) => {
             console.error(e)
         })

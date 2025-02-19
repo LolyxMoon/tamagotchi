@@ -31,7 +31,7 @@ export default class Box extends EventEmitter {
             console.log('Available animations for Box:', gltf.animations.map(anim => anim.name))
 
             // Store animations
-            this.animations = gltf.animations
+            this.animations = gltf.animations 
             this.mixer = new THREE.AnimationMixer(this.model)
 
             // Add a button to trigger the animation after 10 seconds
