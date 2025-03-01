@@ -11,6 +11,9 @@ export default class Box extends EventEmitter {
 
         // Load the model
         this.loadModel()
+
+        // Create the hatching message div
+        this.createHatchingMessage()
     }
 
     loadModel() {
@@ -44,6 +47,25 @@ export default class Box extends EventEmitter {
         this.hatchSound = new Audio('sounds/pop.wav')
     }
 
+    createHatchingMessage() {
+        this.hatchingMessage = document.createElement('div')
+        this.hatchingMessage.className = 'hatching-message'
+        this.hatchingMessage.innerText = 'Hatching...'
+        document.body.appendChild(this.hatchingMessage)
+    }
+
+    showHatchingMessage() {
+        if (this.hatchingMessage) {
+            this.hatchingMessage.style.display = 'block'
+        }
+    }
+
+    hideHatchingMessage() {
+        if (this.hatchingMessage) {
+            this.hatchingMessage.style.display = 'none'
+        }
+    }
+
     playHatchSound() {
         if (this.hatchSound) {
             this.hatchSound.play()
@@ -52,27 +74,39 @@ export default class Box extends EventEmitter {
 
     onAnimationFinished() {
         // Remove the box from the scene
-        this.scene.remove(this.model)
-        this.model.traverse((child) => {
-            if (child.geometry) child.geometry.dispose()
-            if (child.material) {
-                if (Array.isArray(child.material)) {
-                    child.material.forEach((material) => material.dispose())
-                } else {
-                    child.material.dispose()
+        if (this.model) {
+            this.scene.remove(this.model)
+            this.model.traverse((child) => {
+                if (child.geometry) child.geometry.dispose()
+                if (child.material) {
+                    if (Array.isArray(child.material)) {
+                        child.material.forEach((material) => material.dispose())
+                    } else {
+                        child.material.dispose()
+                    }
                 }
-            }
-        })
-        this.model = null
+            })
+            this.model = null
+        }
 
         // Remove the hatch button from the GUI
-        this.hatchButton.destroy()
+        if (this.hatchButton) {
+            this.hatchButton.destroy()
+            this.hatchButton = null
+        }
+
+        // Hide the hatching message
+        this.hideHatchingMessage()
 
         // Emit an event to notify that the box animation is finished
         this.trigger('boxHatched')
     }
 
     triggerAnimation() {
+        if (this.hatchButton) {
+            this.hatchButton.disable() // Disable the button to prevent multiple triggers
+        }
+        this.showHatchingMessage() // Show the hatching message
         setTimeout(() => {
             this.playAnimation('Hatch')
         }, 10000) // Hatch after 10 seconds
